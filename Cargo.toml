@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+clap = { version = "4.5.20", features = ["derive"] }
 # FIXME: Wait for lib to accept my pull-request (ref resolution) and release a working version
 # pdf = "0.9.0"
 pdf = { path = "libs/pdf/pdf" }

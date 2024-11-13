@@ -1,22 +1,100 @@
+mod filematcher;
+
 use std::io::Write;
 use std::fs;
 use std::process::ExitCode;
 
+use clap::Parser;
+
 use pdf::file::FileOptions;
 use pdf::object::NameTreeNode::Leaf;
 use pdf::object::Resolve;
-use pdf::primitive::PdfString;
 
-fn matches_str(pdf_str: &PdfString, str: &str) -> bool {
-    pdf_str.to_string().ok().map_or(false, |decoded| decoded == str)
+use filematcher::FileMatcher;
+
+
+// Command line args
+#[derive(Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    /// PDF input file
+    pdf_input: std::path::PathBuf,
+
+    /// Attachment output path (default = pdfInput + ".xml")
+    attachment_output: Option<std::path::PathBuf>,
+
+    /// Specifies the name of the attachment to extract (default: "factur-x.xml" or "xrechnung.xml")
+    #[arg(short, long)]
+    name: Option<String>,
+
+    /// Display pdf structure information
+    #[arg(short, long, default_value_t=false)]
+    verbose: bool,
 }
 
-fn main() -> ExitCode {
-    let pdf_path = "E:\\Users\\David\\Documents\\Rust\\zugferd\\pdfs\\EXTENDED_Kostenrechnung.pdf";
-    // let pdf_path = "E:\\Users\\David\\Documents\\Rust\\zugferd\\pdfs\\XRECHNUNG_Betriebskostenabrechnung.pdf";
-    let pdf_name = "factur-x.xml";
+impl Cli {
+    pub fn input_path(&self) -> std::path::PathBuf {
+        Cli::resolve_path(&self.pdf_input)
+    }
 
-    let pdf_file = FileOptions::cached().open(pdf_path).unwrap();
+
+    pub fn output_path(&self) -> std::path::PathBuf {
+        let path = match self.attachment_output.as_ref() {
+            Some(path) => path.clone(),
+            None => {
+                // Add .xml extension to input path
+                let mut output = self.pdf_input.clone();
+                output.set_extension("pdf.xml");
+                output
+            }
+        };
+
+        Cli::resolve_path(&path)
+    }
+
+    pub fn resolve_path(path: &std::path::PathBuf) -> std::path::PathBuf {
+        // Resolve to absolute path if necessary
+        if path.is_relative() {
+            std::env::current_dir().unwrap().join(path)
+        } else {
+            path.clone()
+        }
+    }
+
+    pub fn verboseLog(&self, message: String) {
+        if self.verbose {
+            println!("{}", message);
+        }
+    }
+}
+
+
+
+
+//TODO: Update dependency once pdf-rs merges my pull-request
+//TODO: tidy up code
+
+fn main() -> ExitCode {
+    let cli = Cli::parse();
+
+    //TODO: process output path
+    //TODO: support verbose flag
+
+    // Helper to match the attachment name
+    let matcher = FileMatcher::from(&cli.name);
+    
+    
+    let input_path = cli.input_path();
+    let output_path = cli.output_path();
+
+    cli.verboseLog(format!("Reading: {}", input_path.display().to_string()));
+    
+    //TODO: handle error result properly
+    let pdf_file = FileOptions::cached().open(&input_path).unwrap();
+
+
+    //TODO: Write remaining verbose logs
+    //TODO: maybe exit early in case of error dragging the Results around makes handling a bit uncomfortable
 
     let embedded_files = pdf_file.get_root().names.as_ref().and_then(|dict_ref| dict_ref.embedded_files.as_ref());
     println!("{:?}", embedded_files);
@@ -33,7 +111,7 @@ fn main() -> ExitCode {
     // Get the first embedded file with matching file name
     let first_embedded_file_filter_result = match embedded_file_vec {
         None => Err((1, String::from("No embedded files found!"))),
-        Some(vec) => vec.iter().find(|(pdf_str, _)| matches_str(pdf_str, pdf_name)).ok_or((2, String::from("No embedded file with matching name found")))
+        Some(vec) => vec.iter().find(|(pdf_str, _)| matcher.matches(pdf_str)).ok_or((2, String::from("No embedded file with matching name found")))
     };
     println!("{:?}", first_embedded_file_filter_result);
 
@@ -59,20 +137,20 @@ fn main() -> ExitCode {
     
     
     // Write the file
+    cli.verboseLog(format!("Writing: {}", output_path.display().to_string()));
     let result = file_bytes.and_then(|bytes| {
-        let open_result = fs::OpenOptions::new().write(true).truncate(true).create(true).open(pdf_name);
-        open_result.and_then(|mut file| file.write_all(&*bytes)).map_err(|err| (7, format!("Failed to write {}: {}", pdf_name, err)))
+        let open_result = fs::OpenOptions::new().write(true).truncate(true).create(true).open(&output_path);
+        open_result.and_then(|mut file| file.write_all(&*bytes)).map_err(|err| (7, format!("Failed to write {}: {}", &output_path.display().to_string(), err)))
     });
     
 
     // Finally print out the result
     match result {
         Ok(_) => {
-            println!("{} successfully written!", pdf_name);
             ExitCode::from(0)
         },
         Err((code, msg)) => {
-            println!("{}", msg);
+            eprintln!("{}", msg);
             ExitCode::from(code)
         }
     }
