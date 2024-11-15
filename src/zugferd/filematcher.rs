@@ -1,8 +1,7 @@
-//TODO: include this struct in main somehow
-
 use pdf::primitive::PdfString;
 
 
+/// Struct for matching the embedded xml files by their name
 pub struct FileMatcher {
     names: Vec<String>
 }
