@@ -5,6 +5,6 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.5.20", features = ["derive"] }
-# FIXME: Wait for lib to accept my pull-request (ref resolution) and release a working version
 # pdf = "0.9.0"
-pdf = { path = "libs/pdf/pdf" }
+# FIXME: We specify the github repository to get the version after the ref resolution pull request has been accepted
+pdf = { git = "https://github.com/pdf-rs/pdf.git", rev = "b69e0753c9d6adff567b911494309798e0954e6a" }

@@ -492,6 +492,7 @@ checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 [[package]]
 name = "pdf"
 version = "0.9.0"
+source = "git+https://github.com/pdf-rs/pdf.git?rev=b69e0753c9d6adff567b911494309798e0954e6a#b69e0753c9d6adff567b911494309798e0954e6a"
 dependencies = [
  "aes",
  "bitflags",
@@ -518,6 +519,7 @@ dependencies = [
 [[package]]
 name = "pdf_derive"
 version = "0.2.0"
+source = "git+https://github.com/pdf-rs/pdf.git?rev=b69e0753c9d6adff567b911494309798e0954e6a#b69e0753c9d6adff567b911494309798e0954e6a"
 dependencies = [
  "proc-macro2",
  "quote",
