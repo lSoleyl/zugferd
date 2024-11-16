@@ -1,4 +1,3 @@
-mod zugferd;
 use zugferd::{FileMatcher, Cli, Error};
 
 use std::io::Write;
