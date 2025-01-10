@@ -14,6 +14,10 @@ impl Error {
             exit_code: ExitCode::from(code)
         }
     }
+
+    pub fn print(&self) {
+        eprintln!("{}", self.message);
+    }
 }
 
 

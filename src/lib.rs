@@ -1,3 +1,3 @@
 mod zugferd;
 
-pub use zugferd::{Cli, Error, FileMatcher};
+pub use zugferd::{Error, FileMatcher};

@@ -1,6 +1,6 @@
 [package]
 name = "zugferd"
-version = "1.0.0"
+version = "1.0.2"
 edition = "2021"
 
 [dependencies]
@@ -9,3 +9,4 @@ clap = { version = "4.5.20", features = ["derive"] }
 # FIXME: We specify my forked repository to get the version with support for associated files and
 #        disabled Date parsing as some PDFs I encountered seem to contain the wrong ' character in dates.
 pdf = { git = "https://github.com/lSoleyl/pdf.git", branch = "lax_parsing" }
+regex = "1.11.1"
