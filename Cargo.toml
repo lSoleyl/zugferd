@@ -8,5 +8,6 @@ clap = { version = "4.5.20", features = ["derive"] }
 # pdf = "0.9.0"
 # FIXME: We specify my forked repository to get the version with support for associated files and
 #        disabled Date parsing as some PDFs I encountered seem to contain the wrong ' character in dates.
-pdf = { git = "https://github.com/lSoleyl/pdf.git", branch = "lax_parsing" }
+# pdf = { git = "https://github.com/lSoleyl/pdf.git", branch = "lax_parsing" }
+pdf = { path = "libs/pdf/pdf" }
 regex = "1.11.1"

@@ -496,7 +496,6 @@ checksum = "1261fe7e33c73b354eab43b1273a57c8f967d0391e80353e51f764ac02cf6775"
 [[package]]
 name = "pdf"
 version = "0.9.0"
-source = "git+https://github.com/lSoleyl/pdf.git?branch=lax_parsing#79f3bddb42b0eb5e9e7177a00c6a84cf04dd41b8"
 dependencies = [
  "aes",
  "bitflags",
@@ -523,7 +522,6 @@ dependencies = [
 [[package]]
 name = "pdf_derive"
 version = "0.2.0"
-source = "git+https://github.com/lSoleyl/pdf.git?branch=lax_parsing#79f3bddb42b0eb5e9e7177a00c6a84cf04dd41b8"
 dependencies = [
  "proc-macro2",
  "quote",
