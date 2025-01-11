@@ -24,9 +24,9 @@ To build a version compatible with Windows 7 run following code
 
 The executable file will be located in the `target/release/` folder.
 
-## Usage
+## `extract`
 
-Currently there this repository consists of only one tool to extract the xml.
+The main binary for extraction of e-invoice XML data from a given PDF file.
 
     Usage: extract.exe [OPTIONS] <PDF_INPUT> [ATTACHMENT_OUTPUT]
 
@@ -40,3 +40,19 @@ Currently there this repository consists of only one tool to extract the xml.
     -s, --strict       Exit with an error if the file is not a valid e-invoice. If not set the tool will try to extract any .xml file somehow
     -h, --help         Print help
     -V, --version      Print version
+
+## `inspect`
+
+This binary allows low level inspection of a given PDF file and extraction of embedded file streams.
+
+    Usage: inspect.exe [OPTIONS] <PDF_INPUT>
+    
+    Arguments:
+      <PDF_INPUT>  PDF input file
+    
+    Options:
+      -r, --ref <REFERENCES>  resolve the ref with the given id (separate by comma if passing multiple)
+      -p, --print <PRINT>     print the content of the stream(s) behind the given ref(s) to the console
+      -e, --export <EXPORT>   export the raw stream behind the given ref(s) and write it to a new file (next to the input PDF)
+      -h, --help              Print help
+      -V, --version           Print version
